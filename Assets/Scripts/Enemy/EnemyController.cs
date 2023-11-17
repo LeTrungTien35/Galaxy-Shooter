@@ -51,7 +51,7 @@ public class EnemyController : MonoBehaviour
     {
         if (col.tag == "PlayerBullet")
         {
-            Destroy(col.gameObject);
+            //Destroy(col.gameObject);
             DamageHealthbar();
             GameObject damageEffect = Instantiate(damageEffectPrefabs, col.transform.position, Quaternion.identity);
             Destroy(damageEffect, 0.1f);

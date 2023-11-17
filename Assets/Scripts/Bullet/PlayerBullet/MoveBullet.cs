@@ -11,9 +11,10 @@ public class MoveBullet : MonoBehaviour
         
     }
 
-    // Update is called once per frame
     void Update()
     {
         transform.Translate(huongDiChuyen * tocDo * Time.deltaTime);
     }
+
+
 }

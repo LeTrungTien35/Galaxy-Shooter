@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Shooting : MonoBehaviour
 {
-    public GameObject bullet;
     public Transform spawnPoin1;
     public Transform spawnPoin2;
+    public Transform spawnPoin3;
     public float tocDoBan = 1f;
     public AudioSource audioSource;
     void Start()
@@ -22,8 +22,12 @@ public class Shooting : MonoBehaviour
 
     void Fire()
     {
-        Instantiate(bullet, spawnPoin1.position, Quaternion.identity);
-        Instantiate(bullet, spawnPoin2.position, Quaternion.identity);
+
+        GameObject bullet = ObjectPool.ins.GetPooledObject();       
+        if (bullet != null)
+        {
+            bullet.transform.position = spawnPoin3.position;
+        }      
     }    
 
     IEnumerator Shoot()

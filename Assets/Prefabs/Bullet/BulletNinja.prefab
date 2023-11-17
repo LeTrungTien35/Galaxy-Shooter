@@ -96,6 +96,7 @@ GameObject:
   - component: {fileID: 8299470650303774969}
   - component: {fileID: 8299470650303774968}
   - component: {fileID: 8299470650303774975}
+  - component: {fileID: 4014583333815230350}
   m_Layer: 0
   m_Name: BulletNinja
   m_TagString: PlayerBullet
@@ -180,3 +181,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tocDo: 15
   huongDiChuyen: {x: 0, y: 1, z: 0}
+--- !u!114 &4014583333815230350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8299470650303774974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59c8be93019362a45aa34acbfe59451e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
