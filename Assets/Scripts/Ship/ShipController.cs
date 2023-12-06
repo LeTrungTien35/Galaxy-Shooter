@@ -14,7 +14,6 @@ public class ShipController : MonoBehaviour
     int health = 3;
 
     public AudioSource audioSource;
-    public AudioClip damageSound;
     public AudioClip explosionSound;
 
     // RESET
@@ -52,15 +51,12 @@ public class ShipController : MonoBehaviour
         {
             //PLAY SOUND
             AudioSource.PlayClipAtPoint(explosionSound, Camera.main.transform.position);
+
             //INSTANTIATE EXPLOSION
             GameObject explosion = Instantiate(shipExplosionPrefab, transform.position, Quaternion.identity);
             Destroy(explosion, 2f);
-
-            // HIEN THI GAMEOVER
-            //GamePlayController.instance.StartCoroutineGameOver();
-
-            // DESTROY PLAYER
-
+            
+            //DAT LAI VI TRI KHI DIE
             transform.position = initPosition;
             
             StartCoroutine(Rest());
@@ -79,6 +75,7 @@ public class ShipController : MonoBehaviour
 
         shootingComponent.CanShoot = true;
         GetComponent<BoxCollider2D>().enabled = true;
+
         //SpriteRenderer[] sp = GetComponentsInChildren<SpriteRenderer>();
         //foreach (SpriteRenderer childImage in sp)
         //{

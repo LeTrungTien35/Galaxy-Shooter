@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class _BackGroundScolling : MonoBehaviour
 {
@@ -20,8 +19,5 @@ public class _BackGroundScolling : MonoBehaviour
         _renderer.sharedMaterial.SetTextureOffset("_MainTex", Offset);
     }
 
-    public void LoadSceneL1()
-    {
-        SceneManager.LoadScene("Level 1");
-    }    
+      
 }

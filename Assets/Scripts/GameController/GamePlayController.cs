@@ -11,15 +11,14 @@ public class GamePlayController : MonoBehaviour
     public TMP_Text textCoin;
     public TMP_Text lifeText;
     public TMP_Text stageText;
-    public TMP_Text highScoreText;
-    public TMP_Text highLevelText;
+    public TMP_Text ScoreText;
+    public TMP_Text LevelText;
 
     public GameObject pausePanel;
     public GameObject WinPanel;
     public GameObject gameOverPanel;
     public GameObject pauseButton;
     public GameObject leveCompletePanel;
-    //public GameObject endText;
 
     static int level = 1; // level nguoi choi dat duoc
     static int score; // diem so
@@ -27,17 +26,11 @@ public class GamePlayController : MonoBehaviour
 
     int enemyAmount; // so luong enemy
 
-    int scoreToBonusLife = 10000; // diem thuong cho life
+    int scoreToBonusLife = 1000; // diem thuong cho life
 
     static int bonusScore; // diem thuong
     static bool hasLost; // da thua
 
-    // SCORE
-    /*
-     Flys in formation = 50 - flying around 100
-     Wasps in formation = 80 - flying around 160
-     Boss in formation = 80 - flying around 160
-     */
 
     void Awake()
     {
@@ -78,6 +71,7 @@ public class GamePlayController : MonoBehaviour
         }
     }
 
+    // CHECK GAME OVER
     public void DecreaseLifes()
     {
         lifes--;
@@ -85,6 +79,7 @@ public class GamePlayController : MonoBehaviour
         if(lifes <= 0)
         {
             hasLost = true;
+            CheckHighScoreAndHighLevel();
             StartCoroutineGameOver();
         }
     }
@@ -154,7 +149,16 @@ public class GamePlayController : MonoBehaviour
             Time.timeScale = 1f;
         }
         SceneManager.LoadScene("MainMenu");          
-    }    
+    }
+
+    public void Restart()
+    {
+        if (Time.timeScale == 0f)
+        {
+            Time.timeScale = 1f;
+        }
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
 
     public void StartCoroutineGameOver()
     {
@@ -168,8 +172,8 @@ public class GamePlayController : MonoBehaviour
         gameOverPanel.SetActive(true);
         pauseButton.SetActive(false);
 
-        highScoreText.text = "HIGH SCORE: " + score;
-        highLevelText.text = "HIGHEST LEVEL: " + level;
+        ScoreText.text = "SCORE: " + score;
+        LevelText.text = "LEVEL: " + level;
     }    
 
     public IEnumerator LevelCompletePanel()
@@ -180,6 +184,23 @@ public class GamePlayController : MonoBehaviour
         Time.timeScale = 0f;
         leveCompletePanel.SetActive(true);
         pauseButton.SetActive(false);
+    }
+
+    void CheckHighScoreAndHighLevel()
+    {
+        if(ScoreManager.instance != null)
+        {
+            if (score > ScoreManager.instance.GetHighScore())
+            {
+                Debug.Log("Diem moi la: " + score);
+                ScoreManager.instance.SetHighScore(score);
+            }
+            if (level > ScoreManager.instance.GetHighLevel())
+            {
+                Debug.Log("level moi la: " + level);
+                ScoreManager.instance.SetHighLevel(level);
+            }
+        }           
     }
 
 }
