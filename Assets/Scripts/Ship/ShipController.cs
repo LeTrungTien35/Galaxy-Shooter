@@ -7,19 +7,21 @@ using UnityEngine;
 public class ShipController : MonoBehaviour
 {
     public GameObject shipExplosionPrefab;
-    public PlayerHealthbar healthbar;
     public GameObject damageEffectPrefabs;
-    public float health = 20f;
-    float barFillAmount = 1f;
-    float damage = 0;
     public int coin;
+
+    [SerializeField]
+    int health = 3;
 
     public AudioSource audioSource;
     public AudioClip damageSound;
     public AudioClip explosionSound;
+
+    // RESET
+    Vector3 initPosition;
     void Start()
     {
-        damage = barFillAmount / health;
+        initPosition = transform.position;
     }
 
 
@@ -31,41 +33,69 @@ public class ShipController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        if(col.tag == "EnemyBullet")
+        if (col.tag == "EnemyShip")
         {
-            DamagePlayerHealthbar();
-            Destroy(col.gameObject);
+            TakeDamage(-10);
             GameObject damageEffect = Instantiate(damageEffectPrefabs, col.transform.position, Quaternion.identity);
-            Destroy(damageEffect, 0.1f);
-            if(health <= 0)
-            {
-                AudioSource.PlayClipAtPoint(explosionSound, Camera.main.transform.position);
-                Destroy(gameObject);
-                GameObject explosion = Instantiate(shipExplosionPrefab, transform.position, Quaternion.identity);
-                Destroy(explosion, 2f);
-                GamePlayController.instance.StartCoroutineGameOver();
-            }              
-        }  
-        
-        if(col.gameObject.tag == "Coin")
-        {
-            coin++;
-            Destroy(col.gameObject);
-            if(GamePlayController.instance != null)
-            {
-                GamePlayController.instance.SetCoin(coin);
-            }    
-        }    
+            Destroy(damageEffect, 0.1f);          
+        }
 
     }
     
-    void DamagePlayerHealthbar()
+   
+
+    public void TakeDamage(int amount)
     {
-        if(health > 0)
+        health += amount;
+        
+        if (health <= 0)
         {
-            health -= 1;
-            barFillAmount = barFillAmount - damage;
-            healthbar.SetAmount(barFillAmount);
-        }    
+            //PLAY SOUND
+            AudioSource.PlayClipAtPoint(explosionSound, Camera.main.transform.position);
+            //INSTANTIATE EXPLOSION
+            GameObject explosion = Instantiate(shipExplosionPrefab, transform.position, Quaternion.identity);
+            Destroy(explosion, 2f);
+
+            // HIEN THI GAMEOVER
+            //GamePlayController.instance.StartCoroutineGameOver();
+
+            // DESTROY PLAYER
+
+            transform.position = initPosition;
+            
+            StartCoroutine(Rest());
+
+        }
+    }
+
+    IEnumerator Rest()
+    {
+        GetComponent<BoxCollider2D>().enabled = false;
+        GamePlayController.instance.DecreaseLifes();
+        Shooting shootingComponent = GetComponent<Shooting>();
+        shootingComponent.CanShoot = false;     
+        
+        yield return new WaitForSeconds(1.8f);
+
+        shootingComponent.CanShoot = true;
+        GetComponent<BoxCollider2D>().enabled = true;
+        //SpriteRenderer[] sp = GetComponentsInChildren<SpriteRenderer>();
+        //foreach (SpriteRenderer childImage in sp)
+        //{
+        //    childImage.enabled = false;
+        //}
+        //GetComponent<BoxCollider2D>().enabled = false;
+        //GetComponent<Shooting>().enabled = false;
+
+        //transform.position = initPosition;
+        //Debug.Log(initPosition);
+        //Debug.Log(transform.position);
+        //yield return new WaitForSeconds(3f);
+
+        //foreach (SpriteRenderer childImage in sp)
+        //{
+        //    childImage.enabled = true;
+        //}
+        //GetComponent<BoxCollider2D>().enabled = true;
     }    
 }

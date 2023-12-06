@@ -1,15 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
-using JetBrains.Annotations;
 
-public class SpawnManage : MonoBehaviour
+public class SpawnManager : MonoBehaviour
 {
     [Header("Intervals")]
     public float enemySpawnInterval; //interval between ship spaws
     public float waveSpawnInterval; //interval between waes
-    
+
     int currentWave;
 
     int flyID = 0;
@@ -27,18 +26,23 @@ public class SpawnManage : MonoBehaviour
     public Formation bossFormation;
     [Serializable]
     public class Wave
-    {       
+    {
         public int flyAmount;
         public int waspAmount;
         public int bossAmount;
 
-        public GameObject[] pathPrefabs;     
+        public GameObject[] pathPrefabs;
 
     }
     [Header("Waves")]
     public List<Wave> waveList = new List<Wave>();
 
     List<Path> activePathList = new List<Path>();
+
+    [HideInInspector]
+    public List<GameObject> spawnedEnemies = new List<GameObject>();
+
+    bool spawnComplete;
 
     void Start()
     {
@@ -48,8 +52,13 @@ public class SpawnManage : MonoBehaviour
     IEnumerator SpawnWaves()
     {
 
-        while(currentWave < waveList.Count)
+        while (currentWave < waveList.Count)
         {
+            if(currentWave == waveList.Count - 1)
+            {
+                spawnComplete = true;
+            }
+
             for (int i = 0; i < waveList[currentWave].pathPrefabs.Length; i++)
             {
                 GameObject newPathObj = Instantiate(waveList[currentWave].pathPrefabs[i], transform.position, Quaternion.identity);
@@ -66,6 +75,9 @@ public class SpawnManage : MonoBehaviour
                 enemyMoving.SpawnSetup(activePathList[PathPingPong()], flyID, flyFormation);
                 flyID++;
 
+                spawnedEnemies.Add(newFly);
+
+                // WAIT FOR SPAWN INTERVAL
                 yield return new WaitForSeconds(enemySpawnInterval);
             }
 
@@ -77,6 +89,8 @@ public class SpawnManage : MonoBehaviour
 
                 waspMoving.SpawnSetup(activePathList[PathPingPong()], waspID, waspFormation);
                 waspID++;
+
+                spawnedEnemies.Add(newWasp);
 
                 yield return new WaitForSeconds(enemySpawnInterval);
             }
@@ -90,6 +104,9 @@ public class SpawnManage : MonoBehaviour
                 bossMoving.SpawnSetup(activePathList[PathPingPong()], bossID, bossFormation);
                 bossID++;
 
+                spawnedEnemies.Add(newBoss);
+
+
                 yield return new WaitForSeconds(enemySpawnInterval);
             }
 
@@ -101,7 +118,33 @@ public class SpawnManage : MonoBehaviour
                 Destroy(p.gameObject);
             }
 
-            activePathList.Clear(); 
+            activePathList.Clear();
+        }
+
+       
+        Invoke("CheckEnemyState", 1f);
+    }
+
+    void CheckEnemyState()
+    {
+        bool inFormation  = false;
+        for (int i = spawnedEnemies.Count - 1; i >= 0; i--)
+        {
+            if (spawnedEnemies[i].GetComponent<EnemyMoving>().enemyStates != EnemyMoving.EnemyStates.IDLE)
+            {
+                inFormation = true;
+                Invoke("CheckEnemyState", 1f);
+                break;
+            }
+        }
+        inFormation = true;
+
+        if(inFormation)
+        {
+            StartCoroutine(flyFormation.ActivateSpread());
+            StartCoroutine(waspFormation.ActivateSpread());
+            StartCoroutine(bossFormation.ActivateSpread());
+            CancelInvoke("CheckEnemyState");
         }
     }
 
@@ -114,7 +157,7 @@ public class SpawnManage : MonoBehaviour
     int PathPingPong()
     {
         return (flyID + bossID + waspID) % activePathList.Count;
-    }    
+    }
 
 
     void OnValidate()
@@ -124,15 +167,29 @@ public class SpawnManage : MonoBehaviour
         {
             curFlyAmount += waveList[i].flyAmount;
         }
-        
 
-        if(curFlyAmount > 20)
+
+        if (curFlyAmount > 20)
         {
             Debug.LogError("Vuot qua so luong fly la 20");
-        }    
+        }
         else
         {
             Debug.Log("tong so luong fly: " + curFlyAmount);
-        }    
+        }
+    }
+
+    void ReportToGameManage()
+    {
+        if(spawnedEnemies.Count == 0 && spawnComplete)
+        {
+            GamePlayController.instance.winCondition();
+        }
+    }
+
+    public void UpdateSpawnedEnemies(GameObject enemy)
+    {
+        spawnedEnemies.Remove(enemy);
+        ReportToGameManage();
     }
 }
