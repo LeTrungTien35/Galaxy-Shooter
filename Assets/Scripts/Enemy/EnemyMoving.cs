@@ -31,9 +31,6 @@ public class EnemyMoving : MonoBehaviour
     // HIEU UNG NO ENEMY
     public GameObject enemyExplosionPrefab;
 
-    //AM THANH
-    public AudioSource audioSource;
-    public AudioClip explosionSound;
     public enum EnemyStates
     {
         ON_PATH,
@@ -155,7 +152,7 @@ public class EnemyMoving : MonoBehaviour
         if(health <= 0)
         {
             //PLAY SOUND
-            AudioSource.PlayClipAtPoint(explosionSound, Camera.main.transform.position, 0.08f);
+            AudioManager.instance.PlaySFX(AudioManager.instance.explosionSound_Enemy);
             // INSTATIATE PRATICLE
             GameObject enemyExplosion = Instantiate(enemyExplosionPrefab, transform.position, Quaternion.identity);
             Destroy(enemyExplosion, 0.4f);

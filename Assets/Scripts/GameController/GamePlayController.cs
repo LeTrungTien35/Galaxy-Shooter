@@ -19,9 +19,10 @@ public class GamePlayController : MonoBehaviour
     public GameObject gameOverPanel;
     public GameObject pauseButton;
     public GameObject leveCompletePanel;
+    public GameObject endText;
 
     static int level = 1; // level nguoi choi dat duoc
-    static int score; // diem so
+    static int score = 0; // diem so
     static int lifes = 3; // mang song
 
     int enemyAmount; // so luong enemy
@@ -44,7 +45,7 @@ public class GamePlayController : MonoBehaviour
             bonusScore = 0;
             hasLost = false;
         }
-        //endText.SetActive(false);
+        endText.SetActive(false);
         leveCompletePanel.SetActive(false);
         pausePanel.SetActive(false);
         WinPanel.SetActive(false);
@@ -80,14 +81,14 @@ public class GamePlayController : MonoBehaviour
         {
             hasLost = true;
             CheckHighScoreAndHighLevel();
-            StartCoroutineGameOver();
+            StartCoroutine(GameOver());
         }
     }
 
     public void winCondition()
     {
         level++;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        StartCoroutine(LevelCompletePanel());        
     }
 
     void MakeInstance()
@@ -130,6 +131,7 @@ public class GamePlayController : MonoBehaviour
 
     public void PauseGame()
     {
+        AudioManager.instance.PlaySFX(AudioManager.instance.button);
         pausePanel.SetActive(true);
         pauseButton.SetActive(false);
         Time.timeScale = 0f;
@@ -148,6 +150,7 @@ public class GamePlayController : MonoBehaviour
         {
             Time.timeScale = 1f;
         }
+        AudioManager.instance.PlayMusic(AudioManager.instance.backGround_menu, true);
         SceneManager.LoadScene("MainMenu");          
     }
 
@@ -159,11 +162,7 @@ public class GamePlayController : MonoBehaviour
         }
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
-
-    public void StartCoroutineGameOver()
-    {
-        StartCoroutine(GameOver());
-    }    
+  
     private IEnumerator GameOver()
     {
         yield return new WaitForSeconds(1.5f);
@@ -179,11 +178,9 @@ public class GamePlayController : MonoBehaviour
     public IEnumerator LevelCompletePanel()
     {
         yield return new WaitForSeconds(1f);
-        //endText.SetActive(true);
-        yield return new WaitForSeconds(2f);
-        Time.timeScale = 0f;
-        leveCompletePanel.SetActive(true);
-        pauseButton.SetActive(false);
+        endText.SetActive(true);
+        yield return new WaitForSeconds(2.5f);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     void CheckHighScoreAndHighLevel()

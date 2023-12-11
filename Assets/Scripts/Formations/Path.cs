@@ -5,13 +5,16 @@ using UnityEngine;
 public class Path : MonoBehaviour
 {
     [SerializeField]
-    bool running;
-    public bool visualizePath;
+    bool running; // NEU CHAY THI KHONG XOA LIST BEZIER
+
+    public bool visualizePath; //
 
     // Mau cua Gizmos
     public Color pathColor = Color.green;
+
     // Mang chua gameobject con trong gameobj cha
     Transform[] objArray;
+
     // List them ds objarray vao
     public List<Transform> pathObjList = new List<Transform>();
 
@@ -143,7 +146,7 @@ public class Path : MonoBehaviour
             overload = 3;
         }
 
-        //CURVE CREATING
+        // TAO CURVE 
         bezierObjList.Clear();
         Vector3 lineStart = pathObjList[0].position;
 

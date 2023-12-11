@@ -8,7 +8,6 @@ public class Shooting : MonoBehaviour
     //public Transform spawnPoin2;
     public Transform spawnPoin3;
     public float tocDoBan = 1f;
-    public AudioSource audioSource;
 
     [SerializeField]
     int bulletDamage = 1;
@@ -32,7 +31,7 @@ public class Shooting : MonoBehaviour
         {
             bullet.transform.position = spawnPoin3.position;
             bullet.GetComponent<BulletController>().SetDamage(bulletDamage);
-            audioSource.Play();
+            AudioManager.instance.PlaySFX(AudioManager.instance.bullet_Player);
         }      
     }    
 

@@ -13,9 +13,6 @@ public class ShipController : MonoBehaviour
     [SerializeField]
     int health = 3;
 
-    public AudioSource audioSource;
-    public AudioClip explosionSound;
-
     // RESET
     Vector3 initPosition;
     void Start()
@@ -50,7 +47,7 @@ public class ShipController : MonoBehaviour
         if (health <= 0)
         {
             //PLAY SOUND
-            AudioSource.PlayClipAtPoint(explosionSound, Camera.main.transform.position);
+            AudioManager.instance.PlaySFX(AudioManager.instance.explosionSound_Player);
 
             //INSTANTIATE EXPLOSION
             GameObject explosion = Instantiate(shipExplosionPrefab, transform.position, Quaternion.identity);

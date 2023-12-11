@@ -286,7 +286,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -78, y: 0}
+  m_AnchoredPosition: {x: -78, y: -122}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &62367375
@@ -1674,8 +1674,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4280675340
+  m_fontColor: {r: 0.047970813, g: 0.9245283, b: 0.14649738, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2129,6 +2129,7 @@ MonoBehaviour:
   gameOverPanel: {fileID: 1857049582}
   pauseButton: {fileID: 1450835948}
   leveCompletePanel: {fileID: 726799931}
+  endText: {fileID: 384830554}
 --- !u!1 &583524416
 GameObject:
   m_ObjectHideFlags: 0
@@ -4524,7 +4525,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1968583400}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.98, z: 0}
+  m_LocalPosition: {x: 0, y: 2.91, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4588,7 +4589,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1989814769
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4606,7 +4607,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -1000, y: 0}
+  m_AnchoredPosition: {x: -1000, y: 122}
   m_SizeDelta: {x: 0, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!95 &1989814770
@@ -4659,8 +4660,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4281745141
+  m_fontColor: {r: 0.9622642, g: 0.2432696, b: 0.21333215, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -5820,7 +5821,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnPoin3: {fileID: 4402213825308527466}
   tocDoBan: 0.25
-  audioSource: {fileID: 4402213824719819994}
   bulletDamage: 1
   CanShoot: 1
 --- !u!50 &4402213824719819998
@@ -5860,8 +5860,6 @@ MonoBehaviour:
   damageEffectPrefabs: {fileID: 3193817273990216259, guid: 4dd952e7177ace94c98df93f0d80a5e6, type: 3}
   coin: 0
   health: 3
-  audioSource: {fileID: 4402213824719819994}
-  explosionSound: {fileID: 8300000, guid: 4922e2a12420a154686db6b4961f7975, type: 3}
 --- !u!1 &4402213824914548768
 GameObject:
   m_ObjectHideFlags: 0
