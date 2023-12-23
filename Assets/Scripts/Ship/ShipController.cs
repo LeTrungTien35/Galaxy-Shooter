@@ -47,8 +47,11 @@ public class ShipController : MonoBehaviour
         if (health <= 0)
         {
             //PLAY SOUND
-            AudioManager.instance.PlaySFX(AudioManager.instance.explosionSound_Player);
-
+            if(AudioManager.instance != null)
+            {
+                AudioManager.instance.PlaySFX(AudioManager.instance.explosionSound_Player);
+            }    
+           
             //INSTANTIATE EXPLOSION
             GameObject explosion = Instantiate(shipExplosionPrefab, transform.position, Quaternion.identity);
             Destroy(explosion, 2f);

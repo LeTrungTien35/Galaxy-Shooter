@@ -25,13 +25,15 @@ public class Shooting : MonoBehaviour
 
     void Fire()
     {
-
         GameObject bullet = ObjectPool.ins.GetPooledObject();       
         if (bullet != null && CanShoot == true)
         {
             bullet.transform.position = spawnPoin3.position;
             bullet.GetComponent<BulletController>().SetDamage(bulletDamage);
-            AudioManager.instance.PlaySFX(AudioManager.instance.bullet_Player);
+            if(AudioManager.instance != null)
+            {
+                AudioManager.instance.PlaySFX(AudioManager.instance.bullet_Player, 0.05f);
+            }              
         }      
     }    
 

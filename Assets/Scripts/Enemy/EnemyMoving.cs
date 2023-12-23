@@ -152,7 +152,10 @@ public class EnemyMoving : MonoBehaviour
         if(health <= 0)
         {
             //PLAY SOUND
-            AudioManager.instance.PlaySFX(AudioManager.instance.explosionSound_Enemy);
+            if(AudioManager.instance != null)
+            {
+                AudioManager.instance.PlaySFX(AudioManager.instance.explosionSound_Enemy);
+            }                
             // INSTATIATE PRATICLE
             GameObject enemyExplosion = Instantiate(enemyExplosionPrefab, transform.position, Quaternion.identity);
             Destroy(enemyExplosion, 0.4f);

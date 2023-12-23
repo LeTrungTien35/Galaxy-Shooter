@@ -48,6 +48,7 @@ public class Path : MonoBehaviour
             objArray = GetComponentsInChildren<Transform>();
             //clearObj
             pathObjList.Clear();
+
             foreach (Transform obj in objArray)
             {
                 if (obj != this.transform)
