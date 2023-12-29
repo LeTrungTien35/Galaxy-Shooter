@@ -76,7 +76,11 @@ public class MenuController : MonoBehaviour
 
     public void OnOffSettingPanel()
     {
-        if(settingPanel.activeSelf)
+        if (AudioManager.instance != null)
+        {
+            AudioManager.instance.PlaySFX(AudioManager.instance.button);
+        }
+        if (settingPanel.activeSelf)
         {
             settingPanel.SetActive(false);
         }    
@@ -93,6 +97,10 @@ public class MenuController : MonoBehaviour
 
     public void OnOffInstructionPanel()
     {
+        if (AudioManager.instance != null)
+        {
+            AudioManager.instance.PlaySFX(AudioManager.instance.button);
+        }
         if (instructionPanel.activeSelf)
         {
             instructionPanel.SetActive(false);

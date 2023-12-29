@@ -167,7 +167,10 @@ public class GamePlayController : MonoBehaviour
     /// </summary>
     public void PauseGame()
     {
-        AudioManager.instance.PlaySFX(AudioManager.instance.button);
+        if (AudioManager.instance != null)
+        {
+            AudioManager.instance.PlaySFX(AudioManager.instance.button);
+        }
         pausePanel.SetActive(true);
         pauseButton.SetActive(false);
         Time.timeScale = 0f;
@@ -178,6 +181,10 @@ public class GamePlayController : MonoBehaviour
     /// </summary>
     public void ResumeGame()
     {
+        if (AudioManager.instance != null)
+        {
+            AudioManager.instance.PlaySFX(AudioManager.instance.button);
+        }
         pausePanel.SetActive(false);
         pauseButton.SetActive(true);
         Time.timeScale = 1f;
@@ -192,7 +199,11 @@ public class GamePlayController : MonoBehaviour
         {
             Time.timeScale = 1f;
         }
-        AudioManager.instance.PlayMusic(AudioManager.instance.backGround_menu, true);
+        if (AudioManager.instance != null)
+        {
+            AudioManager.instance.PlaySFX(AudioManager.instance.button);
+            AudioManager.instance.PlayMusic(AudioManager.instance.backGround_menu, true);
+        }      
         SceneManager.LoadScene("MainMenu");          
     }
 
@@ -208,6 +219,13 @@ public class GamePlayController : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
     
+    public void AddLives()
+    {
+        lifes++;
+        if (lifes > 3) lifes = 3;
+        UpdateLifeText(lifes);
+    }
+
     /// <summary>
     /// IEnumerator hien thi Panel Game Over
     /// </summary>

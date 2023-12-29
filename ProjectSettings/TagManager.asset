@@ -9,6 +9,10 @@ TagManager:
   - Coin
   - DestroyZone
   - EnemyShip
+  - Live
+  - ItemRocket
+  - Test
+  - Rocket
   layers:
   - Default
   - TransparentFX

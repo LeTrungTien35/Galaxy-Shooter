@@ -181,7 +181,6 @@ public class EnemyMoving : MonoBehaviour
         }
     }
 
-
     public void SetDameAndHealth(int newDamage, int newHealth)
     {
         bulletDamage += newDamage;
@@ -202,5 +201,14 @@ public class EnemyMoving : MonoBehaviour
         yield return new WaitForSeconds(enemyBulletSpawnTime);
         Fire();
         StartCoroutine(Shoot());
+    }
+
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        if(col.tag == "Rocket")
+        {
+            TakeDamage(10);
+            Destroy(col.gameObject);
+        }    
     }
 }

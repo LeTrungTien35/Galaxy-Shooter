@@ -19,6 +19,9 @@ public class AudioManager : MonoBehaviour
 
     public AudioClip bullet_Player;
 
+    public AudioClip pickupItems;
+    public AudioClip shootRocket;
+
     public bool musicSourceMuted;
     public bool sfxSourceMuted;
 

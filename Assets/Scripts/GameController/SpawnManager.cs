@@ -46,7 +46,6 @@ public class SpawnManager : MonoBehaviour
 
     bool spawnComplete; // HOAN THANH SPAWN
 
-    static int hehe = 1;
 
     // CLASS WAVE
     [Serializable]
@@ -79,8 +78,6 @@ public class SpawnManager : MonoBehaviour
                 GameObject newPathObj = Instantiate(waveList[currentWave].pathPrefabs[i], transform.position, Quaternion.identity);
                 Path newPath = newPathObj.GetComponent<Path>();
                 activePathList.Add(newPath);
-                Debug.Log(hehe);
-                hehe++;
             }
 
             //FLYS

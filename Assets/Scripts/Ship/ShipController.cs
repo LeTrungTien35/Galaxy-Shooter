@@ -36,6 +36,28 @@ public class ShipController : MonoBehaviour
             Destroy(damageEffect, 0.1f);          
         }
 
+        if(col.tag == "Live")
+        {
+            Destroy(col.gameObject);
+            GamePlayController.instance.AddLives();
+            if (AudioManager.instance != null)
+            {
+                AudioManager.instance.PlaySFX(AudioManager.instance.pickupItems);
+            }
+            Debug.Log("Them mang moi");
+        }
+
+        if (col.tag == "ItemRocket")
+        {
+            Destroy(col.gameObject);
+            ItemsSpawnManager items = GameObject.Find("ItemsSpawnManager").GetComponent<ItemsSpawnManager>();
+            items.PickupRocketItem();
+            if (AudioManager.instance != null)
+            {
+                AudioManager.instance.PlaySFX(AudioManager.instance.pickupItems);
+            }
+            Debug.Log("Nhat rocket");
+        }
     }
     
    
