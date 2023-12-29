@@ -292,12 +292,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyBulletSpawnTime: 8
-  bulletDamage: -1
+  bulletDamage: -2
   pathToFollow: {fileID: 0}
   currentWayPointID: 0
   speed: 5
   reachDistance: 0.2
-  rotationSpeed: 5
   useBezier: 1
   health: 2
   bullet: {fileID: 7191225554257267122, guid: e26995a3450390a4fae8bd8126350737, type: 3}

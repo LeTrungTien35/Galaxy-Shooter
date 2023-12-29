@@ -75,24 +75,6 @@ public class ShipController : MonoBehaviour
 
         shootingComponent.CanShoot = true;
         GetComponent<BoxCollider2D>().enabled = true;
-
-        //SpriteRenderer[] sp = GetComponentsInChildren<SpriteRenderer>();
-        //foreach (SpriteRenderer childImage in sp)
-        //{
-        //    childImage.enabled = false;
-        //}
-        //GetComponent<BoxCollider2D>().enabled = false;
-        //GetComponent<Shooting>().enabled = false;
-
-        //transform.position = initPosition;
-        //Debug.Log(initPosition);
-        //Debug.Log(transform.position);
-        //yield return new WaitForSeconds(3f);
-
-        //foreach (SpriteRenderer childImage in sp)
-        //{
-        //    childImage.enabled = true;
-        //}
-        //GetComponent<BoxCollider2D>().enabled = true;
+        health = 3;
     }    
 }

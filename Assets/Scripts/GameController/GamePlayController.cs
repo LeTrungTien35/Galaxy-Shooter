@@ -8,7 +8,7 @@ public class GamePlayController : MonoBehaviour
 {
     public static GamePlayController instance;
 
-    public TMP_Text textCoin;
+    public TMP_Text textCoin; 
     public TMP_Text lifeText;
     public TMP_Text stageText;
     public TMP_Text ScoreText;
@@ -21,17 +21,17 @@ public class GamePlayController : MonoBehaviour
     public GameObject leveCompletePanel;
     public GameObject endText;
 
+    
     static int level = 1; // level nguoi choi dat duoc
     static int score = 0; // diem so
     static int lifes = 3; // mang song
-
-    int enemyAmount; // so luong enemy
 
     int scoreToBonusLife = 1000; // diem thuong cho life
 
     static int bonusScore; // diem thuong
     static bool hasLost; // da thua
 
+    public int hehe = level;
 
     void Awake()
     {
@@ -60,6 +60,22 @@ public class GamePlayController : MonoBehaviour
         ShowStageText(level);
     }
 
+    void MakeInstance()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    /// <summary>
+    /// Cong Diem 
+    /// </summary>
+    /// <param name="amount"></param>
     public void AddScore(int amount)
     {
         score += amount;
@@ -72,7 +88,9 @@ public class GamePlayController : MonoBehaviour
         }
     }
 
-    // CHECK GAME OVER
+    /// <summary>
+    /// CHECK GAME OVER
+    /// </summary>
     public void DecreaseLifes()
     {
         lifes--;
@@ -85,50 +103,68 @@ public class GamePlayController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Kiem Tra Win Game
+    /// </summary>
     public void winCondition()
     {
         level++;
         StartCoroutine(LevelCompletePanel());        
     }
 
-    void MakeInstance()
-    {
-        if (instance == null)
-        {
-            instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }    
-
-    // Cap nhat coin text
+    /// <summary>
+    /// Cap nhat coin text
+    /// </summary>
+    /// <param name="amount"></param>
     public void UpdateCoinText(int amount)
     {
         textCoin.text = amount.ToString();
     }
 
-    // Cap nhat mang song
+    /// <summary>
+    /// Cap nhat mang song
+    /// </summary>
+    /// <param name="amount"></param>
     public void UpdateLifeText(int amount)
     {
         lifeText.text = "X" + amount.ToString();
     }
 
-    // Hien thi stage 
+    /// <summary>
+    /// Thong bao Stage hien tai
+    /// </summary>
+    /// <param name="amount"></param>
     public void ShowStageText(int amount)
     {
         stageText.gameObject.SetActive(true);
         stageText.text = "Stage " + amount;
         StartCoroutine(DelayShowStage());
     }
+  
 
-    public IEnumerator DelayShowStage()
+    /// <summary>
+    /// Cap nhat diem cao
+    /// </summary>
+    void CheckHighScoreAndHighLevel()
     {
-        yield return new WaitForSeconds(3f);
-        stageText.gameObject.SetActive(false);
+        if (ScoreManager.instance != null)
+        {
+            if (score > ScoreManager.instance.GetHighScore())
+            {
+                Debug.Log("Diem moi la: " + score);
+                ScoreManager.instance.SetHighScore(score);
+            }
+            if (level > ScoreManager.instance.GetHighLevel())
+            {
+                Debug.Log("level moi la: " + level);
+                ScoreManager.instance.SetHighLevel(level);
+            }
+        }
     }
 
+    /// <summary>
+    /// Button Pause Game
+    /// </summary>
     public void PauseGame()
     {
         AudioManager.instance.PlaySFX(AudioManager.instance.button);
@@ -137,6 +173,9 @@ public class GamePlayController : MonoBehaviour
         Time.timeScale = 0f;
     }
     
+    /// <summary>
+    /// Button Resume Game
+    /// </summary>
     public void ResumeGame()
     {
         pausePanel.SetActive(false);
@@ -144,6 +183,9 @@ public class GamePlayController : MonoBehaviour
         Time.timeScale = 1f;
     }
 
+    /// <summary>
+    /// Button quay lai main menu
+    /// </summary>
     public void BackHome()
     {
         if (Time.timeScale == 0f)
@@ -154,6 +196,9 @@ public class GamePlayController : MonoBehaviour
         SceneManager.LoadScene("MainMenu");          
     }
 
+    /// <summary>
+    /// Restart scene
+    /// </summary>
     public void Restart()
     {
         if (Time.timeScale == 0f)
@@ -162,7 +207,11 @@ public class GamePlayController : MonoBehaviour
         }
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
-  
+    
+    /// <summary>
+    /// IEnumerator hien thi Panel Game Over
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator GameOver()
     {
         yield return new WaitForSeconds(1.5f);
@@ -175,6 +224,10 @@ public class GamePlayController : MonoBehaviour
         LevelText.text = "LEVEL: " + level;
     }    
 
+    /// <summary>
+    /// IEnumerator hoan thanh Level
+    /// </summary>
+    /// <returns></returns>
     public IEnumerator LevelCompletePanel()
     {
         yield return new WaitForSeconds(1f);
@@ -183,21 +236,14 @@ public class GamePlayController : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    void CheckHighScoreAndHighLevel()
+    /// <summary>
+    /// Delay Show giai doan
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator DelayShowStage()
     {
-        if(ScoreManager.instance != null)
-        {
-            if (score > ScoreManager.instance.GetHighScore())
-            {
-                Debug.Log("Diem moi la: " + score);
-                ScoreManager.instance.SetHighScore(score);
-            }
-            if (level > ScoreManager.instance.GetHighLevel())
-            {
-                Debug.Log("level moi la: " + level);
-                ScoreManager.instance.SetHighLevel(level);
-            }
-        }           
+        yield return new WaitForSeconds(3f);
+        stageText.gameObject.SetActive(false);
     }
-
+  
 }

@@ -5,17 +5,16 @@ using UnityEngine;
 public class EnemyMoving : MonoBehaviour
 {
     [SerializeField]
-    float enemyBulletSpawnTime = 10f;
+    float enemyBulletSpawnTime = 10f; // THOI GIAN BAN DAN
     [SerializeField]
-    int bulletDamage = -1;
+    int bulletDamage = -1; // DAMAGE CUA BULLET
 
-    public Path pathToFollow;
-    public int currentWayPointID = 0;
-    public float speed = 2;
-    public float reachDistance = 0.4f;
-    public float rotationSpeed = 5f;
+    public Path pathToFollow; // PATH 
+    public int currentWayPointID = 0; //ID bezierObjList HIEN TAI
+    public float speed = 2; // TOC DO DI CHUYEN
+    public float reachDistance = 0.4f; // KHOANG CACH DAT DUOC
 
-    float distance;
+    float distance; // KHOANG CACH CUA ENEMY VOI bezierObjList
     public bool useBezier;
 
     //HEALTH
@@ -31,6 +30,7 @@ public class EnemyMoving : MonoBehaviour
     // HIEU UNG NO ENEMY
     public GameObject enemyExplosionPrefab;
 
+    // ENUM TRANG THAI CUA ENEMY
     public enum EnemyStates
     {
         ON_PATH,
@@ -39,17 +39,16 @@ public class EnemyMoving : MonoBehaviour
         DIVE
     }
 
+    // TRANG THAI ENEMY
     public EnemyStates enemyStates;
-
-    public int enemyID;
-    public Formation formation;
+    public int enemyID; // ID CUA ENEMY 
+    public Formation formation; // DOI HINH CUA ENEMY
 
     void Start()
     {
         StartCoroutine(Shoot());
     }
 
-    // Update is called once per frame
     void Update()
     {
         switch (enemyStates)
@@ -61,7 +60,7 @@ public class EnemyMoving : MonoBehaviour
                 MoveToFormation();
                 break;
             case EnemyStates.IDLE:
-                
+
                 break;
             case EnemyStates.DIVE:
                 MoveOnThePath(pathToFollow);
@@ -69,6 +68,9 @@ public class EnemyMoving : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// DI CHUYEN ENEMY VAO FORMATION
+    /// </summary>
     void MoveToFormation()
     {
         transform.position = Vector3.MoveTowards(transform.position, formation.GetVector(enemyID), speed * Time.deltaTime);
@@ -78,60 +80,51 @@ public class EnemyMoving : MonoBehaviour
             transform.SetParent(formation.gameObject.transform);
             transform.eulerAngles = Vector3.zero;
 
+            // SAU KHI ENEMY VAO FORMATION THI THONG BAO CHO FORMATION 
             formation.enemyList.Add(new Formation.EnemyFormation(enemyID, transform.localPosition.x, transform.localPosition.y, this.gameObject));
 
             enemyStates = EnemyStates.IDLE;
         }
     }
+
+    /// <summary>
+    /// DI CHUYEN ENEMY THEO PATH
+    /// </summary>
+    /// <param name="path"></param>
     void MoveOnThePath(Path path)
     {
-        if (useBezier)
+        distance = Vector3.Distance(path.bezierObjList[currentWayPointID], transform.position);
+        transform.position = Vector3.MoveTowards(transform.position, path.bezierObjList[currentWayPointID], speed * Time.deltaTime);
+
+
+        if (distance <= reachDistance)
         {
-            distance = Vector3.Distance(path.bezierObjList[currentWayPointID], transform.position);
-            transform.position = Vector3.MoveTowards(transform.position, path.bezierObjList[currentWayPointID], speed * Time.deltaTime);          
-        }
-        else
-        {
-            distance = Vector3.Distance(path.pathObjList[currentWayPointID].position, transform.position);
-            transform.position = Vector3.MoveTowards(transform.position, path.pathObjList[currentWayPointID].position, speed * Time.deltaTime);
+            currentWayPointID++;
         }
 
-        if (useBezier)
+        if (currentWayPointID >= path.bezierObjList.Count)
         {
-            if (distance <= reachDistance)
+            currentWayPointID = 0;
+
+            // DIVING
+            if (enemyStates == EnemyStates.DIVE)
             {
-                currentWayPointID++;
+                transform.position = GameObject.Find("EnemySpawnPoint").transform.position;
+                Destroy(pathToFollow.gameObject);
             }
 
-            if (currentWayPointID >= path.bezierObjList.Count)
-            {
-                currentWayPointID = 0;
-
-                // DIVING
-                if(enemyStates == EnemyStates.DIVE)
-                {
-                    transform.position = GameObject.Find("EnemySpawnPoint").transform.position;
-                    Destroy(pathToFollow.gameObject);
-                }
-
-                enemyStates = EnemyStates.FLY_IN;
-            }
+            enemyStates = EnemyStates.FLY_IN;
         }
-        else
-        {
-            if (distance <= reachDistance)
-            {
-                currentWayPointID++;
-            }
 
-            if (currentWayPointID >= path.pathObjList.Count)
-            {
-                currentWayPointID = 0;
-                enemyStates = EnemyStates.FLY_IN;
-            }
-        }
+
     }
 
+    /// <summary>
+    /// THIET LAP DOI HINH
+    /// </summary>
+    /// <param name="path"></param>
+    /// <param name="ID"></param>
+    /// <param name="_formation"></param>
     public void SpawnSetup(Path path, int ID, Formation _formation)
     {
         pathToFollow = path;
@@ -139,6 +132,10 @@ public class EnemyMoving : MonoBehaviour
         formation = _formation;
     }
 
+    /// <summary>
+    /// THIET LAP DIVING
+    /// </summary>
+    /// <param name="path"></param>
     public void DiveSetup(Path path)
     {
         pathToFollow = path;
@@ -146,16 +143,20 @@ public class EnemyMoving : MonoBehaviour
         enemyStates = EnemyStates.DIVE;
     }
 
+    /// <summary>
+    /// NHAN DAME TU BULLET
+    /// </summary>
+    /// <param name="amount"></param>
     public void TakeDamage(int amount)
     {
         health -= amount;
-        if(health <= 0)
+        if (health <= 0)
         {
             //PLAY SOUND
-            if(AudioManager.instance != null)
+            if (AudioManager.instance != null)
             {
-                AudioManager.instance.PlaySFX(AudioManager.instance.explosionSound_Enemy);
-            }                
+                AudioManager.instance.PlaySFX(AudioManager.instance.explosionSound_Enemy, 0.2f);
+            }
             // INSTATIATE PRATICLE
             GameObject enemyExplosion = Instantiate(enemyExplosionPrefab, transform.position, Quaternion.identity);
             Destroy(enemyExplosion, 0.4f);
@@ -163,7 +164,7 @@ public class EnemyMoving : MonoBehaviour
             // ADD SCORE
             GamePlayController.instance.AddScore(score);
 
-            //REPORT TO FORMATION
+            //REPORT CHO FORMATION NHUNG ENEMY DA BI DESTROY
             for (int i = 0; i < formation.enemyList.Count; i++)
             {
                 if (formation.enemyList[i].index == enemyID)
@@ -175,25 +176,26 @@ public class EnemyMoving : MonoBehaviour
             //REPORT TO SPAWN MANAGER
             SpawnManager sp = GameObject.Find("EnemySpawnPoint").GetComponent<SpawnManager>();
             sp.UpdateSpawnedEnemies(gameObject);
-            //for (int i = 0; i < sp.spawnedEnemies.Count; i++)
-            //{
-            //    sp.spawnedEnemies.Remove(this.gameObject);
-            //}
-
-            //REPORT TO GAME PLAY CONTROLLER
-            //GamePlayController.instance.ReduceEnemy();
 
             Destroy(gameObject);
-        }    
+        }
     }
-    
+
+
+    public void SetDameAndHealth(int newDamage, int newHealth)
+    {
+        bulletDamage += newDamage;
+        health += newHealth;
+    }
+
     void Fire()
     {
         if (bullet != null && spawnPoint != null && enemyStates == EnemyStates.IDLE)
         {
             GameObject newBullet = Instantiate(bullet, spawnPoint.position, Quaternion.identity);
             newBullet.GetComponent<BulletController>().SetDamage(bulletDamage);
-        }       
+            //newBullet.gameObject.transform.SetParent(transform);
+        }
     }
     IEnumerator Shoot()
     {

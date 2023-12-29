@@ -9,44 +9,42 @@ public class Formation : MonoBehaviour
     // So luong hang (y)
     public int gridSizeY = 2;
 
-    //khoang cach giua cac diem
+    //khoang cach giua cac diem X, Y
     public float gridOffsetX = 1f;
     public float gridOffsety = 1f;
-
     public int div = 4;
 
+    // LIST CHUA VI TRI FORMATION
     public List<Vector3> gridList = new List<Vector3>();
 
-    // MOVE THE FORMATION
-    public float maxMoveOffset = 5f;
+    // DI CHUYEN FORMATION
+    public float maxMoveOffset = 5f; // VI TRI TOI DA DI CHUYEN DUOC
+    float curPosX; // VI TRI TRUC X 
+    Vector3 startPositon; // VI TRI BAT DAU
+    public float speed = 1f; // TOC DO
+    int direction = -1; // HUONG DI CHUYEN
 
-    float curPosX; //moving position
-    Vector3 startPositon;
-    public float speed = 1f;
-    int direction = -1;
+    //SPREADING (lan truyen doi hinh)
+    bool canSpread; // DUOC PHEP SPREAD
+    bool spreadStarted; // BAT DAU
+    float curSpread; // 0 - 1
+    float spreadSpeed = 0.5f; // TOC DO SPREAD
+    int spreadDir = 1; // HUONG SPREAD
 
-    //SPREADING
-    bool canSpread;
-    bool spreadStarted;
+    // TAO LIST CHUA CLASS ENEMY FORMATION 
+    //[HideInInspector]
+    [SerializeField]
+    public List<EnemyFormation> enemyList = new List<EnemyFormation>();
 
-    float spreadAmount = 1f;
-    float curSpread;
-    float spreadSpeed = 0.5f;
-    int spreadDir = 1;
-
-    //DIVING
-    bool canDive;
+    // LIST PATH DIVING
     public List<GameObject> divePathList = new List<GameObject> ();
 
-    [HideInInspector]
-    public List<EnemyFormation> enemyList = new List<EnemyFormation> ();
+    
 
     [System.Serializable]
     public class EnemyFormation
     {
         public int index;
-        public float xPos;
-        public float yPos;
         public GameObject enemy;
 
         public Vector3 goal;
@@ -55,8 +53,8 @@ public class Formation : MonoBehaviour
         public EnemyFormation(int index, float xPos, float yPos, GameObject enemy)
         {
             this.index = index; 
-            this.xPos = xPos;
-            this.yPos = yPos;
+            //this.xPos = xPos;
+            //this.yPos = yPos;
             this.enemy = enemy;
 
             start = new Vector3(xPos, yPos, 0);
@@ -75,6 +73,7 @@ public class Formation : MonoBehaviour
 
     private void Update()
     {
+        // DI CHUYEN FORMATION TRAI PHAI
         if (!canSpread && !spreadStarted)
         {
             curPosX += Time.deltaTime * speed * direction;
@@ -91,10 +90,12 @@ public class Formation : MonoBehaviour
             transform.position = new Vector3(curPosX, startPositon.y, startPositon.z);
         }
 
+        // SPREAD FORMATION
         if (canSpread)
         {
             curSpread += Time.deltaTime * spreadDir * spreadSpeed;
-            if (curSpread >= spreadAmount || curSpread <= 0)
+
+            if (curSpread >= 1 || curSpread <= 0)
             {
                 // CHANGE SPREAD DIRECTION
                 spreadDir *= -1;
@@ -107,34 +108,32 @@ public class Formation : MonoBehaviour
                     enemyList[i].enemy.transform.position = Vector3.Lerp(transform.position + enemyList[i].start, transform.position + enemyList[i].goal, curSpread);
                 }
             }
-        }
-
-        //if(canDive)
-        //{
-        //    canDive = false;
-        //}      
+        }   
     }
 
            
-
+    // IEnumerator SPREAD AND DIVING
     public IEnumerator ActivateSpread()
     {
+        // KIEM TRA XEM DA BAT DAU SPREAD CHUA
         if(spreadStarted)
         {
             yield break;
         }
         spreadStarted = true;
 
+        // DI CHUYEN FORMATION DEN VI TRI BAN DAU
         while(transform.position.x != startPositon.x)
-        {
+        {            
             transform.position = Vector3.MoveTowards(transform.position, startPositon, speed * Time.deltaTime);
             yield return null;
         }
+        // CHO PHEP SPREAD
         canSpread = true;
-        //canDive = true;
+        // GOI PHUONG THUC DIVING SAU 3 DEN 10S
         Invoke("SetDiving", Random.Range(3f, 10f));
-
     }    
+
     /*
     private void OnDrawGizmos()
     {
@@ -160,6 +159,7 @@ public class Formation : MonoBehaviour
         }
     }
     */
+
     private void OnDrawGizmos()
     {
         int num = 0;
@@ -170,6 +170,10 @@ public class Formation : MonoBehaviour
             num++;
         }
     }
+
+    /// <summary>
+    /// TAO FRORMATION
+    /// </summary>
     void CreateGrid()
     {
         gridList.Clear();
@@ -184,9 +188,6 @@ public class Formation : MonoBehaviour
                 float y = gridOffsety * ((num % div) / 2);
 
                 Vector3 vec = new Vector3(x, y, 0);
-
-
-
                 num++;
 
                 gridList.Add(vec);
@@ -194,11 +195,19 @@ public class Formation : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// LAY VI TRI CUA FORMATION
+    /// </summary>
+    /// <param name="ID"></param>
+    /// <returns></returns>
     public Vector3 GetVector(int ID)
     {
         return transform.position + gridList[ID];
     }
 
+    /// <summary>
+    ///  DIVING ENEMY
+    /// </summary>
     void SetDiving()
     {
         if(enemyList.Count > 0)

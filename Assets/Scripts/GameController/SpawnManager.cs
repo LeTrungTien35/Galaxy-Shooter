@@ -6,24 +6,49 @@ using UnityEngine;
 public class SpawnManager : MonoBehaviour
 {
     [Header("Intervals")]
-    public float enemySpawnInterval; //interval between ship spaws
-    public float waveSpawnInterval; //interval between waes
+    public float enemySpawnInterval; // KHOANG THOI GIAN SPAWN ENEMY
+    public float waveSpawnInterval; // KHOANG THOI GIAN SPAWN WAVE
 
-    int currentWave;
+    int currentWave; // DEM WAVE HIEN TAI
 
+    // ID CUA ENEMY
     int flyID = 0;
     int waspID = 0;
-    int bossID;
+    int bossID = 0;
 
-    [Header("Prefab")]
+    // M?c ?? t?ng sát th??ng m?i khi t?ng c?p ??
+    static int damageIncreasePerLevel = 0;
+
+    // M?c ?? t?ng máu m?i khi t?ng c?p ??
+    static int healthIncreasePerLevel = 0;
+
+    [Header("Prefab Enemy")]
     public GameObject flyPrefab;
     public GameObject waspPrefab;
     public GameObject bossPrefab;
 
-    [Header("Formation")]
-    public Formation flyFormation; // for all small ships
+    [Header("Prefab Formation")]
+    public Formation flyFormation; 
     public Formation waspFormation;
     public Formation bossFormation;
+
+
+    // LIST WAVE 
+    [Header("Waves")]
+    public List<Wave> waveList = new List<Wave>();
+
+    // LIST PATH
+    List<Path> activePathList = new List<Path>();
+
+    // LIST NHUNG ENEMY DA SPAWNE
+    [HideInInspector]
+    public List<GameObject> spawnedEnemies = new List<GameObject>();
+
+    bool spawnComplete; // HOAN THANH SPAWN
+
+    static int hehe = 1;
+
+    // CLASS WAVE
     [Serializable]
     public class Wave
     {
@@ -32,17 +57,7 @@ public class SpawnManager : MonoBehaviour
         public int bossAmount;
 
         public GameObject[] pathPrefabs;
-
     }
-    [Header("Waves")]
-    public List<Wave> waveList = new List<Wave>();
-
-    List<Path> activePathList = new List<Path>();
-
-    [HideInInspector]
-    public List<GameObject> spawnedEnemies = new List<GameObject>();
-
-    bool spawnComplete;
 
     void Start()
     {
@@ -55,7 +70,7 @@ public class SpawnManager : MonoBehaviour
         while (currentWave < waveList.Count)
         {
             if(currentWave == waveList.Count - 1)
-            {
+            {               
                 spawnComplete = true;
             }
 
@@ -64,15 +79,18 @@ public class SpawnManager : MonoBehaviour
                 GameObject newPathObj = Instantiate(waveList[currentWave].pathPrefabs[i], transform.position, Quaternion.identity);
                 Path newPath = newPathObj.GetComponent<Path>();
                 activePathList.Add(newPath);
+                Debug.Log(hehe);
+                hehe++;
             }
 
-            //FLYS FIRST
+            //FLYS
             for (int i = 0; i < waveList[currentWave].flyAmount; i++)
             {
                 GameObject newFly = Instantiate(flyPrefab, transform.position, Quaternion.identity) as GameObject;
                 EnemyMoving enemyMoving = newFly.GetComponent<EnemyMoving>();
 
                 enemyMoving.SpawnSetup(activePathList[PathPingPong()], flyID, flyFormation);
+                enemyMoving.SetDameAndHealth(damageIncreasePerLevel, healthIncreasePerLevel);
                 flyID++;
 
                 spawnedEnemies.Add(newFly);
@@ -88,6 +106,7 @@ public class SpawnManager : MonoBehaviour
                 EnemyMoving waspMoving = newWasp.GetComponent<EnemyMoving>();
 
                 waspMoving.SpawnSetup(activePathList[PathPingPong()], waspID, waspFormation);
+                waspMoving.SetDameAndHealth(damageIncreasePerLevel, healthIncreasePerLevel);
                 waspID++;
 
                 spawnedEnemies.Add(newWasp);
@@ -102,6 +121,7 @@ public class SpawnManager : MonoBehaviour
                 EnemyMoving bossMoving = newBoss.GetComponent<EnemyMoving>();
 
                 bossMoving.SpawnSetup(activePathList[PathPingPong()], bossID, bossFormation);
+                bossMoving.SetDameAndHealth(damageIncreasePerLevel, healthIncreasePerLevel);
                 bossID++;
 
                 spawnedEnemies.Add(newBoss);
@@ -125,6 +145,18 @@ public class SpawnManager : MonoBehaviour
         Invoke("CheckEnemyState", 1f);
     }
 
+    /// <summary>
+    /// PHUONG THUC SPAWN
+    /// </summary>
+    void StartSpawn()
+    {
+        StartCoroutine(SpawnWaves());
+        CancelInvoke("StartSpawn");
+    }
+
+    /// <summary>
+    /// KIEM TRA NHUNG ENEMY DA DI CHUYEN VAO DOI HINH CHUA
+    /// </summary>
     void CheckEnemyState()
     {
         bool inFormation  = false;
@@ -148,12 +180,11 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
-    void StartSpawn()
-    {
-        StartCoroutine(SpawnWaves());
-        CancelInvoke("StartSpawn");
-    }
-
+    
+    /// <summary>
+    /// TRA VE ID CUA PATH
+    /// </summary>
+    /// <returns></returns>
     int PathPingPong()
     {
         return (flyID + bossID + waspID) % activePathList.Count;
@@ -179,17 +210,26 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
-    void ReportToGameManage()
+    /// <summary>
+    /// KIEM TRA WIN GAME
+    /// </summary>
+    void ReportToGamePlayController()
     {
         if(spawnedEnemies.Count == 0 && spawnComplete)
         {
+            damageIncreasePerLevel += -1;
+            healthIncreasePerLevel += 2;
             GamePlayController.instance.winCondition();
         }
     }
 
+    /// <summary>
+    /// XOA ENEMY VA KIEM TRA WIN GAME
+    /// </summary>
+    /// <param name="enemy"></param>
     public void UpdateSpawnedEnemies(GameObject enemy)
     {
         spawnedEnemies.Remove(enemy);
-        ReportToGameManage();
+        ReportToGamePlayController();
     }
 }

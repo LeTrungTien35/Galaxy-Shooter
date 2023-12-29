@@ -179,13 +179,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b817131117297cf4f939eff286c9e6e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyBulletSpawnTime: 12
-  bulletDamage: -1
+  enemyBulletSpawnTime: 10
+  bulletDamage: -3
   pathToFollow: {fileID: 0}
   currentWayPointID: 0
   speed: 5
   reachDistance: 0.2
-  rotationSpeed: 5
   useBezier: 1
   health: 10
   bullet: {fileID: 6416339629325705223, guid: de1a53eb9a4b59e4ab3a7cd26859e985, type: 3}

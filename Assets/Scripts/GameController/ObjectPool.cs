@@ -7,6 +7,7 @@ public class ObjectPool : MonoBehaviour
 {
     public static ObjectPool ins;   
     [SerializeField]
+    // SO LUONG BULLET
     private int amountToPool = 10;
     [SerializeField]
     private GameObject bulletPrefab;
@@ -30,6 +31,10 @@ public class ObjectPool : MonoBehaviour
         AddObjectToPool(amountToPool);
     }
 
+    /// <summary>
+    /// THEM OBJECT VAO POOL
+    /// </summary>
+    /// <param name="amount"></param>
     private void AddObjectToPool(int amount)
     {
         for (int i = 0; i < amount; i++)
@@ -40,6 +45,11 @@ public class ObjectPool : MonoBehaviour
             go.transform.parent = transform;
         }
     }    
+
+    /// <summary>
+    /// LAY POOL OBJECT
+    /// </summary>
+    /// <returns></returns>
     public GameObject GetPooledObject()
     {
         for(int i = 0; i < pooledObject.Count; i++)
